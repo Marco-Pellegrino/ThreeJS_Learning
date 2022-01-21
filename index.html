@@ -10,29 +10,71 @@
 	<body>
 		<script src="js/three.js"></script>
 		<script>
+
+			let timer = 0;
+			let color_r, color_g, color_b;
+
 			const scene = new THREE.Scene();
+
+			
 			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-			const renderer = new THREE.WebGLRenderer();
+			
+
+			const renderer = new THREE.WebGLRenderer({
+				antialias: true
+				});
+
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
 
 			const geometry = new THREE.BoxGeometry();
-			const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+			const material = new THREE.MeshNormalMaterial();
 			const cube = new THREE.Mesh( geometry, material );
 			scene.add( cube );
 
 			camera.position.z = 5;
 
-			const animate = function () {
-				requestAnimationFrame( animate );
 
+
+			window.addEventListener('resize', onWindowResize, false);
+			animate();
+			console.log(timer);
+
+			function createColor(){
+				timer += 0.01;
+				color_r = Math.sin(timer);
+				color_g = Math.cos(timer);
+				color_b = Math.tan(timer);
+			}
+
+			function changeBackground(){
+				scene.background = new THREE.Color( color_g, color_g, color_g);
+			}
+
+			function onWindowResize(){
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				camera.updateProjectionMatrix();
+
+				
+				console.log("I have moved the windows");
+				}
+
+			function animate() {
+				
 				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.01;
+				changeBackground();
+				
 
 				renderer.render( scene, camera );
+
+				requestAnimationFrame( animate );
+				createColor();
 			};
 
-			animate();
 		</script>
 	</body>
 </html>
